@@ -1,4 +1,5 @@
 import styled, { css } from 'styled-components';
+import { Link } from 'react-router-dom';
 import { FiChevronRight } from 'react-icons/fi';
 import { shade } from 'polished';
 
@@ -76,7 +77,7 @@ export const Repositories = styled.div`
   max-width: 700px;
 `;
 
-export const Link = styled.a`
+export const LinkPage = styled(Link)`
   display: block;
   background: #fff;
   border-radius: 5px;

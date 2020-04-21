@@ -1,4 +1,5 @@
-import React, { useState, FormEvent } from 'react';
+import React, { useState, useEffect, FormEvent } from 'react';
+
 import api from '../../services/api';
 import Logo from '../../assets/logo.svg';
 
@@ -8,7 +9,7 @@ import {
   Form,
   Button,
   Repositories,
-  Link,
+  LinkPage,
   Avatar,
   Infos,
   TitleRepo,
@@ -29,7 +30,21 @@ interface Repository {
 const Dashboard: React.FC = () => {
   const [newRepo, setNewRepo] = useState('');
   const [inputError, setInputError] = useState('');
-  const [repositories, setRepositories] = useState<Repository[]>([]);
+  const [repositories, setRepositories] = useState<Repository[]>(() => {
+    const storageRepositories = localStorage.getItem('@GitHubExplorer: repos');
+
+    if (storageRepositories) {
+      return JSON.parse(storageRepositories);
+    }
+    return [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem(
+      '@GitHubExplorer: repos',
+      JSON.stringify(repositories),
+    );
+  }, [repositories]);
 
   async function handleAddRepository(
     event: FormEvent<HTMLFormElement>,
@@ -72,7 +87,10 @@ const Dashboard: React.FC = () => {
 
       <Repositories>
         {repositories.map((repository) => (
-          <Link key={repository.full_name} href="teste">
+          <LinkPage
+            key={repository.full_name}
+            to={`/repository/${repository.full_name}`}
+          >
             <Avatar
               src={repository.owner.avatar_url}
               alt={repository.owner.login}
@@ -82,7 +100,7 @@ const Dashboard: React.FC = () => {
               <Description>{repository.description}</Description>
             </Infos>
             <IconMoreDetails />
-          </Link>
+          </LinkPage>
         ))}
       </Repositories>
     </>
